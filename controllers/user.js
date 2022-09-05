@@ -7,7 +7,16 @@ const User = require("../models/User");
 
 exports.register = async (req, res) => {
   try {
-    const { first_name, last_name, email, location, mobile, bio } = req.body;
+    const {
+      first_name,
+      last_name,
+      email,
+      location,
+      mobile,
+      bio,
+      picture,
+      cover,
+    } = req.body;
 
     if (!validateEmail(email)) {
       return res.status(400).json({
@@ -40,6 +49,8 @@ exports.register = async (req, res) => {
       location,
       mobile,
       bio,
+      picture,
+      cover,
     }).save();
 
     res.send({
@@ -48,6 +59,8 @@ exports.register = async (req, res) => {
       picture: user.picture,
       first_name: user.first_name,
       last_name: user.last_name,
+      picture: user.picture,
+      cover: user.cover,
       message: "Register Success !",
     });
   } catch (error) {
@@ -57,9 +70,9 @@ exports.register = async (req, res) => {
 
 exports.getProfile = async (req, res) => {
   try {
-    const { username } = req.params;
+    const { id } = req.params;
     // const user = await User.findById(req.user.id);
-    const profile = await User.findOne({ first_name: username });
+    const profile = await User.findById(id);
 
     if (!profile) {
       return res.json({ ok: false });

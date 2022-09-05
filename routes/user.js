@@ -11,7 +11,7 @@ const {
 const router = express.Router();
 
 router.post("/register", register);
-router.get("/getProfile/:username", getProfile);
+router.get("/getProfile/:id", getProfile);
 router.put("/updateDetailsEducation/:id", updateDetailsEducation);
 router.put("/updateDetailsExperience/:id", updateDetailsExperience);
 router.put("/updateProfilePicture/:id", updateProfilePicture);

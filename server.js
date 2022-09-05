@@ -6,6 +6,7 @@ const dotenv = require("dotenv");
 dotenv.config();
 
 const userRoute = require("./routes/user");
+const uploadPhoto = require("./routes/upload");
 
 const app = express();
 app.use(express.json());
@@ -20,7 +21,7 @@ app.use(
 // readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
 app.use("/api/users", userRoute);
 // app.use("/api/post", uploadPost);
-// app.use("/api/photoupload", uploadPhoto);
+app.use("/api/photoupload", uploadPhoto);
 // app.use("/api/react", postReact);
 
 //database
