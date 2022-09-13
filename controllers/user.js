@@ -4,6 +4,8 @@ const {
   validateUsername,
 } = require("../helpers/validation");
 const User = require("../models/User");
+const Education = require("../models/Educations");
+const Experience = require("../models/Experience");
 
 exports.register = async (req, res) => {
   try {
@@ -80,27 +82,10 @@ exports.getProfile = async (req, res) => {
     await profile.populate(
       "first_name last_name picture mobile location bio education"
     );
-    res.json({ ...profile.toObject() });
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
-};
+    const education = await Education.find({ user: id });
+    const experience = await Experience.find({ user: id });
 
-exports.updateDetailsEducation = async (req, res) => {
-  try {
-    const { infos } = req.body;
-    //const updated = await User.findById(req.params.id);
-
-    const updated = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        education: infos,
-      },
-      {
-        new: true,
-      }
-    );
-    res.json(updated.education);
+    res.json({ ...profile.toObject(), education, experience });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -108,19 +93,15 @@ exports.updateDetailsEducation = async (req, res) => {
 
 exports.updateDetailsExperience = async (req, res) => {
   try {
-    const { jobs } = req.body;
+    const { companyName, role } = req.body;
     //const updated = await User.findById(req.params.id);
-    const updated = await User.findByIdAndUpdate(
-      req.params.id,
-      {
-        experience: jobs,
-      },
-      {
-        new: true,
-      }
-    );
+    const updated = await Experience.findByIdAndUpdate(req.params.id, {
+      companyName: companyName,
+      role: role,
+    });
+    await updated.populate("user", "first_name last_name");
 
-    res.json(updated.experience);
+    res.json(updated);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -149,5 +130,90 @@ exports.updateCover = async (req, res) => {
     res.json(url);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+//Education
+exports.createEdu = async (req, res) => {
+  try {
+    const post = await new Education(req.body).save();
+    await post.populate("user", "first_name last_name");
+    res.json(post);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//update
+
+exports.updateDetailsEducation = async (req, res) => {
+  try {
+    const {
+      school,
+      degree,
+      fstudy,
+      sYear,
+      sMonth,
+      eYear,
+      eMonth,
+      grade,
+      activity,
+    } = req.body;
+    //const updated = await User.findById(req.params.id);
+
+    const updated = await Education.findByIdAndUpdate(
+      req.params.id,
+      {
+        school: school,
+        degree: degree,
+        fstudy: fstudy,
+        sYear: sYear,
+        sMonth: sMonth,
+        eYear: eYear,
+        eMonth: eMonth,
+        grade: grade,
+        activity: activity,
+      },
+      {
+        new: true,
+      }
+    );
+    await updated.populate("user", "first_name last_name");
+
+    res.json(updated);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+// delete Education
+
+exports.deleteEdu = async (req, res) => {
+  try {
+    await Education.findByIdAndRemove(req.params.id);
+    res.json({ status: "ok" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//Expri
+exports.createExp = async (req, res) => {
+  try {
+    const exp = await new Experience(req.body).save();
+    await exp.populate("user", "first_name last_name");
+    res.json(exp);
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
+  }
+};
+
+//delete expricence
+exports.deleteExp = async (req, res) => {
+  try {
+    await Experience.findByIdAndRemove(req.params.id);
+    res.json({ status: "ok" });
+  } catch (error) {
+    return res.status(500).json({ message: error.message });
   }
 };

@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { ObjectId } = mongoose.Schema;
 
 const userSchema = mongoose.Schema(
   {
@@ -44,50 +45,18 @@ const userSchema = mongoose.Schema(
     bio: {
       type: String,
     },
-
-    education: {
-      school: {
-        type: String,
+    education: [
+      {
+        type: ObjectId,
+        ref: "Education",
       },
-      degree: {
-        type: String,
+    ],
+    experience: [
+      {
+        type: ObjectId,
+        ref: "Experience",
       },
-
-      fstudy: {
-        type: String,
-      },
-      sYear: {
-        type: Number,
-        trim: true,
-      },
-      sMonth: {
-        type: Number,
-        trim: true,
-      },
-      eYear: {
-        type: Number,
-        trim: true,
-      },
-      eMonth: {
-        type: Number,
-        trim: true,
-      },
-      grade: {
-        type: String,
-      },
-      activity: {
-        type: String,
-      },
-    },
-
-    experience: {
-      companyName: {
-        type: String,
-      },
-      role: {
-        type: String,
-      },
-    },
+    ],
   },
   {
     timestamps: true,
