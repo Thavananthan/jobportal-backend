@@ -15,6 +15,9 @@ const userSchema = mongoose.Schema(
       trim: true,
       text: true,
     },
+    upProfile: {
+      type: Number,
+    },
 
     email: {
       type: String,

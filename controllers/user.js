@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
       picture,
       cover,
     } = req.body;
-
+    let upProfile = 0;
     if (!validateEmail(email)) {
       return res.status(400).json({
         message: "invalid email address",
@@ -43,6 +43,12 @@ exports.register = async (req, res) => {
         message: "last name must between 3 and 30 characters.",
       });
     }
+    if (picture != null && picture.trim().length > 0) {
+      upProfile++;
+    }
+    if (cover != null && cover.trim().length > 0) {
+      upProfile++;
+    }
 
     const user = await new User({
       first_name,
@@ -53,6 +59,7 @@ exports.register = async (req, res) => {
       bio,
       picture,
       cover,
+      upProfile,
     }).save();
 
     res.send({
@@ -61,6 +68,7 @@ exports.register = async (req, res) => {
       picture: user.picture,
       first_name: user.first_name,
       last_name: user.last_name,
+      upProfile: user.upProfile,
       picture: user.picture,
       cover: user.cover,
       message: "Register Success !",
@@ -70,6 +78,33 @@ exports.register = async (req, res) => {
   }
 };
 
+exports.updateuser = async (req, res) => {
+  try {
+    const { first_name, last_name, email, location, mobile, bio, upProfile } =
+      req.body;
+    //const updated = await User.findById(req.params.id);
+
+    const updated = await User.findByIdAndUpdate(
+      req.params.id,
+      {
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        location: location,
+        mobile: mobile,
+        bio: bio,
+        upProfile: upProfile,
+      },
+      {
+        new: true,
+      }
+    );
+
+    res.send({ ...updated.toObject() });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
 exports.getProfile = async (req, res) => {
   try {
     const { id } = req.params;

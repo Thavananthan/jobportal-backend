@@ -18,7 +18,7 @@ app.use(
 );
 
 //routes
-// readdirSync("./routes").map((r) => app.use("/", require("./routes/" + r)));
+// readdirSnc("./routes").map((r) => app.use("/", require("./routes/" + r)));
 app.use("/api/users", userRoute);
 // app.use("/api/post", uploadPost);
 app.use("/api/photoupload", uploadPhoto);

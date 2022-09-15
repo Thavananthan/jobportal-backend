@@ -10,6 +10,7 @@ const {
   createExp,
   deleteExp,
   deleteEdu,
+  updateuser,
 } = require("../controllers/user");
 
 const router = express.Router();
@@ -24,6 +25,7 @@ router.get("/getProfile/:id", getProfile);
 router.put("/updateDetailsEducation/:id", updateDetailsEducation);
 router.put("/updateDetailsExperience/:id", updateDetailsExperience);
 router.put("/updateProfilePicture/:id", updateProfilePicture);
-router.put("/updateCover:/id", updateCover);
+router.put("/updateCover/:id", updateCover);
+router.put("/updateuser/:id", updateuser);
 
 module.exports = router;
