@@ -63,7 +63,7 @@ exports.register = async (req, res) => {
     }).save();
 
     res.send({
-      id: user._id,
+      _id: user._id,
       username: user.username,
       picture: user.picture,
       first_name: user.first_name,
@@ -129,11 +129,17 @@ exports.getProfile = async (req, res) => {
 exports.updateDetailsExperience = async (req, res) => {
   try {
     const { companyName, role } = req.body;
-    //const updated = await User.findById(req.params.id);
-    const updated = await Experience.findByIdAndUpdate(req.params.id, {
-      companyName: companyName,
-      role: role,
-    });
+    //const updated = await Experience.findById(req.params.id);
+    const updated = await Experience.findByIdAndUpdate(
+      req.params.id,
+      {
+        companyName: companyName,
+        role: role,
+      },
+      {
+        new: true,
+      }
+    );
     await updated.populate("user", "first_name last_name");
 
     res.json(updated);
