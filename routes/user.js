@@ -11,6 +11,7 @@ const {
   deleteExp,
   deleteEdu,
   updateuser,
+  search,
 } = require("../controllers/user");
 
 const router = express.Router();
@@ -18,6 +19,8 @@ const router = express.Router();
 router.post("/register", register);
 router.post("/createEduc", createEdu);
 router.post("/createExp", createExp);
+router.post("/search/:searchTerm", search);
+
 router.delete("/deleteExp/:id", deleteExp);
 router.delete("/deleteEdu/:id", deleteEdu);
 
