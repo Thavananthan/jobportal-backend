@@ -11,6 +11,7 @@ const {
   deleteExp,
   deleteEdu,
   updateuser,
+  verifyEmail,
   search,
 } = require("../controllers/user");
 
@@ -20,6 +21,7 @@ router.post("/register", register);
 router.post("/createEduc", createEdu);
 router.post("/createExp", createExp);
 router.post("/search/:searchTerm", search);
+router.post("/verify", verifyEmail);
 
 router.delete("/deleteExp/:id", deleteExp);
 router.delete("/deleteEdu/:id", deleteEdu);

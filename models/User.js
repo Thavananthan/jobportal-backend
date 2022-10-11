@@ -18,6 +18,18 @@ const userSchema = mongoose.Schema(
     upProfile: {
       type: Number,
     },
+    password: {
+      type: String,
+      required: [true, "password is required"],
+    },
+    active: {
+      type: Boolean,
+      default: false,
+    },
+    otp: {
+      type: String,
+      required: true,
+    },
 
     email: {
       type: String,
@@ -61,6 +73,7 @@ const userSchema = mongoose.Schema(
       },
     ],
   },
+
   {
     timestamps: true,
   }

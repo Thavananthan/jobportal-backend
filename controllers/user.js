@@ -3,6 +3,10 @@ const {
   validateLength,
   validateUsername,
 } = require("../helpers/validation");
+const bcrypt = require("bcrypt");
+const { generateOTP } = require("../services/OTP");
+const { sendMail } = require("../services/MAIL");
+
 const User = require("../models/User");
 const Education = require("../models/Educations");
 const Experience = require("../models/Experience");
@@ -12,6 +16,7 @@ exports.register = async (req, res) => {
     const {
       first_name,
       last_name,
+      password,
       email,
       location,
       mobile,
@@ -50,10 +55,15 @@ exports.register = async (req, res) => {
       upProfile++;
     }
 
+    const cryptedPassword = await bcrypt.hash(password, 12);
+    const otpGenerated = generateOTP();
+
     const user = await new User({
       first_name,
       last_name,
       email,
+      password: cryptedPassword,
+      otp: otpGenerated,
       location,
       mobile,
       bio,
@@ -61,6 +71,10 @@ exports.register = async (req, res) => {
       cover,
       upProfile,
     }).save();
+    await sendMail({
+      to: email,
+      OTP: otpGenerated,
+    });
 
     res.send({
       _id: user._id,
@@ -76,6 +90,34 @@ exports.register = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
+};
+
+module.exports.verifyEmail = async (req, res) => {
+  const { email, otp } = req.body;
+  const user = await validateUserSignUp(email, otp);
+  res.send(user);
+};
+
+const validateUserSignUp = async (email, otp) => {
+  const user = await User.findOne({
+    email,
+  });
+  if (!user) {
+    return [false, "User not found"];
+  }
+  if (user && user.otp !== otp) {
+    return [false, "Invalid OTP"];
+  }
+  const updatedUser = await User.findByIdAndUpdate(
+    user._id,
+    {
+      active: true,
+    },
+    {
+      new: true,
+    }
+  );
+  return { ...updatedUser.toObject() };
 };
 
 exports.updateuser = async (req, res) => {
