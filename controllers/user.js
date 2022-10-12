@@ -80,6 +80,7 @@ exports.register = async (req, res) => {
       _id: user._id,
       username: user.username,
       picture: user.picture,
+      email: user.email,
       first_name: user.first_name,
       last_name: user.last_name,
       upProfile: user.upProfile,
@@ -93,31 +94,30 @@ exports.register = async (req, res) => {
 };
 
 module.exports.verifyEmail = async (req, res) => {
-  const { email, otp } = req.body;
-  const user = await validateUserSignUp(email, otp);
-  res.send(user);
-};
-
-const validateUserSignUp = async (email, otp) => {
-  const user = await User.findOne({
-    email,
-  });
-  if (!user) {
-    return [false, "User not found"];
-  }
-  if (user && user.otp !== otp) {
-    return [false, "Invalid OTP"];
-  }
-  const updatedUser = await User.findByIdAndUpdate(
-    user._id,
-    {
-      active: true,
-    },
-    {
-      new: true,
+  try {
+    const { email, otp } = req.body;
+    const user = await User.findOne({
+      email,
+    });
+    if (!user) {
+      return "User not found";
     }
-  );
-  return { ...updatedUser.toObject() };
+    if (user && user.otp !== otp) {
+      return "Invalid OTP";
+    }
+    const updatedUser = await User.findByIdAndUpdate(
+      user._id,
+      {
+        active: true,
+      },
+      {
+        new: true,
+      }
+    );
+    res.send(updatedUser);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
 };
 
 exports.updateuser = async (req, res) => {
